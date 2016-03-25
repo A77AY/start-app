@@ -20,6 +20,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
     "gulp": "github:gulpjs/gulp#4.0",
+    "gulp-util": "^3.0.7",
     "monkey-hot-loader": "git+https://github.com/KrickRay/monkey-hot-loader.git#webpack2-import",
     "nodemon": "^1.9.1",
     "require-dir": "^0.3.0",

@@ -2,6 +2,8 @@ import webpack from 'webpack'
 import path from 'path'
 import fs from 'fs'
 
+import {server as serverBabelConfig} from '../babel'
+
 var isDevelopment = process.env.NODE_ENV !== 'production';
 
 var nodeModules = fs.readdirSync('node_modules')
@@ -47,7 +49,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loaders: ['monkey-hot?sourceType=module', 'babel']
+                loaders: ['monkey-hot?sourceType=module', 'babel?' + JSON.stringify(serverBabelConfig)]
             }
         ]
     }
