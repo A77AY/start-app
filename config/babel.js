@@ -18,6 +18,9 @@ var app = merge(base, {
 
 module.exports = {
     client: merge(app, {
+        presets: [
+            'react-hmre'
+        ],
         plugins: [
             'transform-es2015-template-literals',
             'transform-es2015-literals',

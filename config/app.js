@@ -9,7 +9,10 @@ export default appConfig({
         src: {
             dir: 'src',
             server: 'server.jsx',
-            client: 'client.jsx'
+            client: 'client.jsx',
+            components: 'components',
+            containers: 'containers',
+            template: 'template'
         }
     }
 });
