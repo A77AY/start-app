@@ -1,10 +1,10 @@
-import gulp, {task} from 'gulp'
-import gutil, {log, colors} from 'gulp-util'
-import path from 'path'
+import {task} from 'gulp'
+import {log, colors} from 'gulp-util'
 import webpack from 'webpack'
 import nodemon from 'nodemon'
 
 import serverWebpackConfig from '../config/webpack/server'
+import nodemonConfig from '../config/nodemon'
 
 task('server:watch', (done) => {
     let firstRun = true;
@@ -16,15 +16,7 @@ task('server:watch', (done) => {
         }
         if (firstRun) {
             firstRun = false;
-            nodemon({
-                execMap: {
-                    js: 'node'
-                },
-                script: path.join(serverWebpackConfig.output.path, 'server.js'),
-                ignore: ['*'],
-                watch: ['foo/'],
-                ext: 'noop'
-            }).on('restart', function () {
+            nodemon(nodemonConfig).on('restart', () => {
                 log(colors.blue('server patched'));
             });
         } else {
@@ -32,4 +24,3 @@ task('server:watch', (done) => {
         }
     });
 });
-

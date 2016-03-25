@@ -1,3 +1,5 @@
+var merge = require('deepmerge');
+
 var base = {
     presets: ['stage-0'],
     plugins: [
@@ -10,12 +12,12 @@ var base = {
     ]
 };
 
-var app = Object.assign(base, {
-    plugins: ['react']
+var app = merge(base, {
+    presets: ['react']
 });
 
 module.exports = {
-    client: Object.assign(app, {
+    client: merge(app, {
         plugins: [
             'transform-es2015-template-literals',
             'transform-es2015-literals',
@@ -32,9 +34,9 @@ module.exports = {
             ['transform-regenerator', { async: false, asyncGenerators: false }]
         ]
     }),
-    server: Object.assign(app, {
+    server: merge(app, {
     }),
-    tasks: Object.assign(base, {
+    tasks: merge(base, {
         plugins: ['transform-es2015-modules-commonjs']
     })
 };

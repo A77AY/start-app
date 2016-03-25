@@ -1,44 +1,32 @@
 import webpack from 'webpack'
 import path from 'path'
-import fs from 'fs'
-
+import nodeModules from '../utils/nodeModules'
 import {server as serverBabelConfig} from '../babel'
-
-var isDevelopment = process.env.NODE_ENV !== 'production';
-
-var nodeModules = fs.readdirSync('node_modules')
-    .filter(function (x) {
-        return ['.bin'].indexOf(x) === -1;
-    });
-
-var root = path.resolve(__dirname, '../../');
+import config from '../app'
 
 module.exports = {
-    devtool: isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
-    debug: isDevelopment,
+    debug: config.isDevelopment,
+    devtool: config.isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
     entry: [
         'webpack/hot/signal.js',
-        './src/server.js'
+        './src/server.jsx'
     ],
     target: 'node',
     output: {
-        path: path.join(root, 'build'),
-        filename: 'server.js'
+        path: config.structure.build.path,
+        filename: config.structure.src.server.name
     },
     node: {
         __dirname: true,
         __filename: true
     },
     externals: [
-        function (context, request, callback) {
-            var pathStart = request.split('/')[0];
-            if (nodeModules.indexOf(pathStart) >= 0 && request != 'webpack/hot/signal.js') {
-                return callback(null, "commonjs " + request);
-            }
-            callback();
+        function (context, request, cb) {
+            if (nodeModules.indexOf(request.split('/')[0]) >= 0 && request != 'webpack/hot/signal.js') return cb(null, "commonjs " + request);
+            cb();
         }
     ],
-    recordsPath: path.join(root, 'build/_records'),
+    recordsPath: path.join(config.structure.build.path, '_records'),
     plugins: [
         new webpack.IgnorePlugin(/\.(css|less)$/),
         new webpack.BannerPlugin({banner: 'require("source-map-support").install();', raw: true, entryOnly: false}),
@@ -47,7 +35,7 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loaders: ['monkey-hot?sourceType=module', 'babel?' + JSON.stringify(serverBabelConfig)]
             }
