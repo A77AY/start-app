@@ -1,6 +1,6 @@
-var webpack = require('webpack');
-var path = require('path');
-var fs = require('fs');
+import webpack from 'webpack'
+import path from 'path'
+import fs from 'fs'
 
 var isDevelopment = process.env.NODE_ENV !== 'production';
 

@@ -5,7 +5,7 @@
   "description": "",
   "keywords": [],
   "scripts": {
-    "start": "./node_modules/.bin/gulp"
+    "start": "./node_modules/.bin/gulp --require ./tasks/utils/transpiler -LLL"
   },
   "license": "MIT",
   "dependencies": {

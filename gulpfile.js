@@ -1,19 +1,15 @@
-var gulp = require('gulp');
-var parallel = gulp.parallel;
-var series = gulp.series;
+import gulp, {parallel, series} from 'gulp'
+import path from 'path'
+import webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
+import nodemon from 'nodemon'
 
-var path = require('path');
-var webpack = require('webpack');
-var WebpackDevServer = require('webpack-dev-server');
-var nodemon = require('nodemon');
-
-var serverConfig = require('./config/webpack/server');
-
+import serverWebpackConfig from './config/webpack/server'
 
 gulp.task('watch', function (done) {
     var firstRun = true;
     var firedDone = false;
-    webpack(serverConfig).watch(100, function (err, stats) {
+    webpack(serverWebpackConfig).watch(100, function (err, stats) {
         if (!firedDone) {
             firedDone = true;
             done();
@@ -24,7 +20,7 @@ gulp.task('watch', function (done) {
                 execMap: {
                     js: 'node'
                 },
-                script: path.join(serverConfig.output.path, 'server.js'),
+                script: path.join(serverWebpackConfig.output.path, 'server.js'),
                 ignore: ['*'],
                 watch: ['foo/'],
                 ext: 'noop'
