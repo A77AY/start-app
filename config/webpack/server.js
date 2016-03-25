@@ -9,6 +9,8 @@ var nodeModules = fs.readdirSync('node_modules')
         return ['.bin'].indexOf(x) === -1;
     });
 
+var root = path.resolve(__dirname, '../../');
+
 module.exports = {
     devtool: isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
     debug: isDevelopment,
@@ -18,7 +20,7 @@ module.exports = {
     ],
     target: 'node',
     output: {
-        path: path.join(__dirname, 'build'),
+        path: path.join(root, 'build'),
         filename: 'server.js'
     },
     node: {
@@ -34,7 +36,7 @@ module.exports = {
             callback();
         }
     ],
-    recordsPath: path.join(__dirname, 'build/_records'),
+    recordsPath: path.join(root, 'build/_records'),
     plugins: [
         new webpack.IgnorePlugin(/\.(css|less)$/),
         new webpack.BannerPlugin({banner: 'require("source-map-support").install();', raw: true, entryOnly: false}),

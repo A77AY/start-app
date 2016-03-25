@@ -7,7 +7,7 @@ var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var nodemon = require('nodemon');
 
-var serverConfig = require('./server');
+var serverConfig = require('./config/webpack/server');
 
 
 gulp.task('watch', function (done) {
