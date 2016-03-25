@@ -5,11 +5,12 @@
   "description": "",
   "keywords": [],
   "scripts": {
-    "start": "./node_modules/.bin/gulp --require ./tasks/utils/transpiler -LLL"
+    "start": "cross-env NODE_ENV=development ./node_modules/.bin/gulp --require ./tasks/utils/transpiler -LLL"
   },
   "license": "MIT",
   "dependencies": {
     "babel-polyfill": "^6.7.4",
+    "cross-env": "^1.0.7",
     "deepmerge": "^0.2.10",
     "fs": "0.0.2",
     "path": "^0.12.7"
@@ -21,6 +22,7 @@
     "babel-preset-react": "^6.5.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
+    "del": "^2.2.0",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-util": "^3.0.7",
     "monkey-hot-loader": "git+https://github.com/KrickRay/monkey-hot-loader.git#webpack2-import",

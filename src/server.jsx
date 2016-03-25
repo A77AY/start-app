@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
             <title>Hello World!</title>
         </head>
         <body>
-            <h1 id="header">Hello world!</h1>
+            <h1 id="header">Hello test!</h1>
             <button id="button">Change color</button>
             <script src="http://localhost:5001/client.js"></script>
         </body>
@@ -20,5 +20,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(3000, () => {
-    console.log('Example app listening on port 3000');
+    console.log('App listening on port 3000');
 });

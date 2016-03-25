@@ -7,14 +7,16 @@ import config from '../app'
 module.exports = {
     debug: config.isDevelopment,
     devtool: config.isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
-    entry: [
-        'webpack/hot/signal.js',
-        './src/server.jsx'
-    ],
+    entry: {
+        server: [
+            'webpack/hot/signal.js',
+            './src/server.jsx'
+        ]
+    },
     target: 'node',
     output: {
         path: config.structure.build.path,
-        filename: config.structure.src.server.name
+        filename: '[name].js'
     },
     node: {
         __dirname: true,
