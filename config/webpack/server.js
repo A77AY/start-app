@@ -4,7 +4,7 @@ import nodeModules from '../utils/nodeModules'
 import {server as serverBabelConfig} from '../babel'
 import config from '../app'
 
-module.exports = {
+export default {
     debug: config.isDevelopment,
     devtool: config.isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
     entry: {

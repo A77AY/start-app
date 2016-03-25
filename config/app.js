@@ -5,6 +5,7 @@ export default appConfig({
         build: 'build',
         config: 'config',
         tasks: 'tasks',
+        public: 'public',
         src: {
             dir: 'src',
             server: 'server.jsx',

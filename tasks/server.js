@@ -26,7 +26,7 @@ task('server:watch', (done) => {
         if (firstRun) {
             firstRun = false;
             nodemon(nodemonConfig).on('restart', () => {
-                log(colors.blue('server patched'));
+                log(colors.blue('Server code patched'));
             });
         } else {
             nodemon.restart();

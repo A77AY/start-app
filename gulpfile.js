@@ -6,4 +6,4 @@ requireDir('./tasks');
 
 log('Enviroment:', colors.green(process.env.NODE_ENV));
 
-task('default', series('server:clear', 'server:watch'));
+task('default', series('server:clear', parallel('server:watch', 'client:watch')));
