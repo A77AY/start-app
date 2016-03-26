@@ -58,7 +58,7 @@ task('app:index,routes', (done) => {
         }
         return routes;
     };
-    gulp.series('app:clear')();
+    //gulp.series('app:clear')();
     let currentCount = srcDirs.length;
     srcDirs.forEach((srcDir) => {
         const isCreateRoutes = srcDir === srcDirs[0];

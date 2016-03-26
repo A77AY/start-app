@@ -41,6 +41,5 @@ module.exports = {
     server: merge(app, {
     }),
     tasks: merge(base, {
-        plugins: []
     })
 };

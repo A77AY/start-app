@@ -36,7 +36,7 @@ export default {
     recordsPath: path.join(config.structure.build.path, '_records'),
     plugins: [
         new webpack.IgnorePlugin(/\.(css|less)$/),
-        new webpack.BannerPlugin({banner: 'require("source-map-support").install();', raw: true, entryOnly: false}),
+        new webpack.BannerPlugin('require("source-map-support").install();', {raw: true, entryOnly: false}),
         new webpack.HotModuleReplacementPlugin({quiet: true})
     ],
     module: {

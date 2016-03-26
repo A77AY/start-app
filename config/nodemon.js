@@ -7,6 +7,6 @@ export default {
     },
     script: path.join(serverWebpackConfig.output.path, 'server.js'),
     ignore: ['*'],
-    watch: ['foo/'],
+    watch: ['nothing/'],
     ext: 'noop'
 };

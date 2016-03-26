@@ -30,11 +30,11 @@
     "eventsource-polyfill": "^0.9.6",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-util": "^3.0.7",
-    "monkey-hot-loader": "git+https://github.com/KrickRay/monkey-hot-loader.git#webpack2-import",
+    "monkey-hot-loader": "git+https://github.com/rmarscher/monkey-hot-loader.git#webpack2-import",
     "nodemon": "^1.9.1",
     "require-dir": "^0.3.0",
     "source-map-support": "^0.4.0",
-    "webpack": "^2.1.0-beta.4",
-    "webpack-dev-server": "^2.0.0-beta"
+    "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1"
   }
 }
