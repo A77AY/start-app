@@ -9,10 +9,9 @@ import nodemonConfig from '../config/nodemon'
 import config from '../config/app'
 
 task('server:clear', (done) => {
-    return del([
-        path.join(config.structure.build.path, '*'),
-        '!' + path.join(config.structure.build.path, 'server.js')
-    ], {force: true});
+    del([path.join(config.structure.build.path, '*')], {force: true});
+    log(colors.yellow('Old build files is removed'));
+    done();
 });
 
 task('server:watch', (done) => {

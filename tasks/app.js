@@ -3,103 +3,91 @@ import {log, colors} from 'gulp-util'
 import path from 'path'
 import fs from 'fs'
 import config from '../config/app'
+import del from 'del'
 
-function collectFiles(pth, saveDir, file, files) {
-    var filePath = path.relative(saveDir, file.path);
-    if (filePath[0] !== '.') filePath = './' + filePath;
-    var fileName = path.parse(file.path).name;
-    var nameParts = path.relative(pth, file.path).split(path.sep);
-    if (nameParts.length === 1) {
-        if (files[fileName]) files[fileName].path = filePath.split(path.sep).join('/');
-        else files[fileName] = {path: filePath.split(path.sep).join('/')};
-    } else {
-        var currentRoot = files;
-        for (var i = 0; i < nameParts.length - 1; ++i) {
-            if (i === nameParts.length - 2) {
-                if (currentRoot[fileName]) currentRoot[fileName].path = filePath.split(path.sep).join('/');
-                else currentRoot[fileName] = {path: filePath.split(path.sep).join('/')};
-            } else {
-                if (!currentRoot[nameParts[i]]) currentRoot[nameParts[i]] = {};
-                if (!currentRoot[nameParts[i]].child) currentRoot[nameParts[i]].child = {};
-                currentRoot = currentRoot[nameParts[i]].child;
-            }
-        }
-    }
-}
+const srcDirs = [
+    config.structure.src.containers,
+    config.structure.src.template,
+    config.structure.src.components
+];
+const savePath = path.join(config.root, 'node_modules', '_');
 
-function indexGenerator(root) {
-    var modules = '';
-    for (var key in root) {
-        if (root[key].child) modules += indexGenerator(root[key].child);
-        if (root[key].path) modules += "export { default as " + key + " } from '" + root[key].path + "';\n";
-    }
-    return modules;
-}
-
-function importGenerator(root) {
-    var modules = '';
-    for (var key in root) {
-        if (root[key].child) modules += importGenerator(root[key].child);
-        if (root[key].path) modules += "import " + key + " from '" + root[key].path + "';\n";
-    }
-    return modules;
-}
-
-function routesGenerator(root) {
-    var routes = '';
-    var tagName = '';
-    var pth = '';
-    for (var key in root) {
-        if (!root[key].path) continue;
-        tagName = 'Route';
-        pth = ' path=';
-        switch (key) {
-            case 'App':
-                pth += '"/"';
-                break;
-            case 'Home':
-                tagName = 'IndexRoute';
-                pth = '';
-                break;
-            default:
-                pth += '{' + key + '.path}';
-        }
-        routes += '\n<' + tagName + pth + ' component={' + key + '}' + (
-                root[key].child
-                    ? '>' + routesGenerator(root[key].child) + '\n</' + tagName
-                    : '/'
-            ) + '>';
-    }
-    return routes;
-}
-
-function createRoutes(saveDir, files) {
-    var routesContent = "import React from 'react';\n";
-    routesContent += "import {Route, IndexRoute} from 'react-router';\n";
-    routesContent += importGenerator(files);
-    routesContent += '\nexport default (' + routesGenerator(files) + '\n);';
-    fs.writeFile(saveDir + '/routes.js', routesContent, function (err) {
-        if (err)  return console.log(err);
-    });
-}
+task('app:clear', (done) => {
+    del([path.join(savePath, '*')], {force: true});
+    log(colors.yellow('Old index and route files is removed'));
+    done();
+});
 
 task('app:index,routes', (done) => {
-    const srcDirs = [
-        config.structure.src.containers,
-        config.structure.src.template,
-        config.structure.src.components
-    ];
-    const saveRootPath = path.join(config.root, 'node_modules', '_');
+    const indexGenerator = (root) => {
+        var modules = '';
+        for (var key in root) {
+            if (root[key].child) modules += indexGenerator(root[key].child);
+            if (root[key].path) modules += "export { default as " + key + " } from '" + root[key].path + "';\n";
+        }
+        return modules;
+    };
+    const importGenerator = (root) => {
+        let modules = '';
+        for (var key in root) {
+            if (root[key].child) modules += importGenerator(root[key].child);
+            if (root[key].path) modules += "import " + key + " from '" + root[key].path + "';\n";
+        }
+        return modules;
+    };
+    const routesGenerator = (root) => {
+        let routes = '';
+        let tagName = '';
+        let props = '';
+        for (const key in root) {
+            if (!root[key].path) continue;
+            tagName = 'Route';
+            props = ' path=';
+            switch (key) {
+                case 'App':
+                    props += '"/"';
+                    break;
+                case config.structure.src.containers.index.name:
+                    tagName = 'IndexRoute';
+                    props = '';
+                    break;
+                default:
+                    props += '{' + key + '.path}';
+            }
+            routes += `\n<${tagName}${props} component={${key}}${root[key].child ? `>${routesGenerator(root[key].child)}\n</${tagName}` : `/`}>`;
+        }
+        return routes;
+    };
+    gulp.series('app:clear')();
+    let currentCount = srcDirs.length;
     srcDirs.forEach((srcDir) => {
         const isCreateRoutes = srcDir === srcDirs[0];
         const watchPaths = [path.join(srcDir.path, '**/*.*')];
-        const savePath = path.join(saveRootPath, srcDir.name);
         let lastIndexContent = '';
-        const createIndex = (type) => {
+        const createIndex = (type, cb = () => {}) => {
             const files = {};
             gulp.src(watchPaths, {read: false})
                 .on('data', (file) => {
-                    collectFiles(srcDir.path, savePath, file, files);
+                    let filePath = path.relative(savePath, file.path);
+                    if (filePath[0] !== '.') filePath = './' + filePath;
+                    const fileName = path.parse(file.path).name;
+                    const nameParts = path.relative(srcDir.path, file.path).split(path.sep);
+                    if (nameParts.length === 1) {
+                        if (files[fileName]) files[fileName].path = filePath.split(path.sep).join('/');
+                        else files[fileName] = {path: filePath.split(path.sep).join('/')};
+                    } else {
+                        var currentRoot = files;
+                        for (var i = 0; i < nameParts.length - 1; ++i) {
+                            if (i === nameParts.length - 2) {
+                                if (currentRoot[fileName]) currentRoot[fileName].path = filePath.split(path.sep).join('/');
+                                else currentRoot[fileName] = {path: filePath.split(path.sep).join('/')};
+                            } else {
+                                if (!currentRoot[nameParts[i]]) currentRoot[nameParts[i]] = {};
+                                if (!currentRoot[nameParts[i]].child) currentRoot[nameParts[i]].child = {};
+                                currentRoot = currentRoot[nameParts[i]].child;
+                            }
+                        }
+                    }
                 })
                 .on('end', () => {
                     if (isCreateRoutes) {
@@ -110,7 +98,7 @@ task('app:index,routes', (done) => {
                     const indexContent = indexGenerator(files);
                     if (lastIndexContent !== indexContent) {
                         lastIndexContent = indexContent;
-                        fs.writeFile(path.join(savePath, 'index.js'), indexContent, (err) => {
+                        fs.writeFile(path.join(savePath, srcDir.name + '.js'), indexContent, (err) => {
                             if (err) return console.log(err);
                         });
                         log(colors.blue(
@@ -124,22 +112,27 @@ task('app:index,routes', (done) => {
                                 App: files.App
                             };
                             delete files.routes;
-                            delete files.Template;
                             delete files.App;
                             routesFiles.App.child = files;
-                            createRoutes(savePath, routesFiles);
-                            log(colors.blue(`Routes updated`));
+                            const routesContent = `import React from 'react';\nimport {Route, IndexRoute} from 'react-router';\n${importGenerator(routesFiles)}\nexport default (${routesGenerator(routesFiles)}\n);`;
+                            fs.writeFile(path.join(savePath, 'routes.js'), routesContent, (err) => {
+                                if (err)  return console.log(err);
+                            });
+                            log(colors.blue(`The routes is updated`));
                         }
                     }
+                    cb();
                 });
         };
+        createIndex(0, () => {
+            if (!--currentCount) done();
+        });
         gulp.watch(watchPaths, {
                 awaitWriteFinish: {
                     stabilityThreshold: 250
                 }
             })
-            .on('add', ()=>createIndex(0))
-            .on('unlink', ()=>createIndex(1));
+            .on('add', () => createIndex(0))
+            .on('unlink', () => createIndex(1));
     });
-    done();
 });

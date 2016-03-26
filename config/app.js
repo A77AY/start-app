@@ -11,8 +11,14 @@ export default appConfig({
             server: 'server.jsx',
             client: 'client.jsx',
             components: 'components',
-            containers: 'containers',
-            template: 'template'
+            containers: {
+                dir: 'containers',
+                index: 'Index'
+            },
+            template: {
+                dir: 'template',
+                template: 'Template.jsx'
+            }
         }
     }
 });
