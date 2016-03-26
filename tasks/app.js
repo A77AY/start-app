@@ -36,56 +36,110 @@ function indexGenerator(root) {
     return modules;
 }
 
-task('app:index', (done) => {
-    const dirs = [
-        config.structure.src.template.name,
-        config.structure.src.containers.name,
-        config.structure.src.components.name
+function importGenerator(root) {
+    var modules = '';
+    for (var key in root) {
+        if (root[key].child) modules += importGenerator(root[key].child);
+        if (root[key].path) modules += "import " + key + " from '" + root[key].path + "';\n";
+    }
+    return modules;
+}
+
+function routesGenerator(root) {
+    var routes = '';
+    var tagName = '';
+    var pth = '';
+    for (var key in root) {
+        if (!root[key].path) continue;
+        tagName = 'Route';
+        pth = ' path=';
+        switch (key) {
+            case 'App':
+                pth += '"/"';
+                break;
+            case 'Home':
+                tagName = 'IndexRoute';
+                pth = '';
+                break;
+            default:
+                pth += '{' + key + '.path}';
+        }
+        routes += '\n<' + tagName + pth + ' component={' + key + '}' + (
+                root[key].child
+                    ? '>' + routesGenerator(root[key].child) + '\n</' + tagName
+                    : '/'
+            ) + '>';
+    }
+    return routes;
+}
+
+function createRoutes(saveDir, files) {
+    var routesContent = "import React from 'react';\n";
+    routesContent += "import {Route, IndexRoute} from 'react-router';\n";
+    routesContent += importGenerator(files);
+    routesContent += '\nexport default (' + routesGenerator(files) + '\n);';
+    fs.writeFile(saveDir + '/routes.js', routesContent, function (err) {
+        if (err)  return console.log(err);
+    });
+}
+
+task('app:index,routes', (done) => {
+    const srcDirs = [
+        config.structure.src.containers,
+        config.structure.src.template,
+        config.structure.src.components
     ];
-    dirs.forEach((dirName) => {
-        const pth = path.join(config.structure.src.path, dirName);
-        const dir = path.join(pth, '**/*.*');
-        const saveDir = path.join(config.root, 'node_modules', '_', dirName);
+    const saveRootPath = path.join(config.root, 'node_modules', '_');
+    srcDirs.forEach((srcDir) => {
+        const isCreateRoutes = srcDir === srcDirs[0];
+        const watchPaths = [path.join(srcDir.path, '**/*.*')];
+        const savePath = path.join(saveRootPath, srcDir.name);
         let lastIndexContent = '';
-        gulp.watch([dir], {
+        const createIndex = (type) => {
+            const files = {};
+            gulp.src(watchPaths, {read: false})
+                .on('data', (file) => {
+                    collectFiles(srcDir.path, savePath, file, files);
+                })
+                .on('end', () => {
+                    if (isCreateRoutes) {
+                        files.routes = {
+                            path: './routes.js'
+                        };
+                    }
+                    const indexContent = indexGenerator(files);
+                    if (lastIndexContent !== indexContent) {
+                        lastIndexContent = indexContent;
+                        fs.writeFile(path.join(savePath, 'index.js'), indexContent, (err) => {
+                            if (err) return console.log(err);
+                        });
+                        log(colors.blue(
+                            (type === 0
+                                ? `File is added to the directory ${srcDir.dir}`
+                                : `File from the directory ${srcDir.dir} deleted`)
+                            + ', the index is updated'
+                        ));
+                        if (isCreateRoutes) {
+                            const routesFiles = {
+                                App: files.App
+                            };
+                            delete files.routes;
+                            delete files.Template;
+                            delete files.App;
+                            routesFiles.App.child = files;
+                            createRoutes(savePath, routesFiles);
+                            log(colors.blue(`Routes updated`));
+                        }
+                    }
+                });
+        };
+        gulp.watch(watchPaths, {
                 awaitWriteFinish: {
-                    stabilityThreshold: 500
+                    stabilityThreshold: 250
                 }
             })
-            .on('add', ()=> {
-                const files = {};
-                gulp.src(dir, {read: false})
-                    .on('data', (file) => {
-                        collectFiles(pth, saveDir, file, files);
-                    })
-                    .on('end', () => {
-                        const indexContent = indexGenerator(files);
-                        if (lastIndexContent !== indexContent) {
-                            lastIndexContent = indexContent;
-                            fs.writeFile(path.join(saveDir, 'index.js'), indexContent, (err) => {
-                                if (err) return console.log(err);
-                            });
-                            log(colors.blue(`index for ${dirName} updated`));
-                        }
-                    });
-            })
-            .on('unlink', ()=> {
-                const files = {};
-                gulp.src(dir, {read: false})
-                    .on('data', (file) => {
-                        collectFiles(pth, saveDir, file, files);
-                    })
-                    .on('end', () => {
-                        const indexContent = indexGenerator(files);
-                        if (lastIndexContent !== indexContent) {
-                            lastIndexContent = indexContent;
-                            fs.writeFile(path.join(saveDir, 'index.js'), indexContent, (err) => {
-                                if (err) return console.log(err);
-                            });
-                            log(colors.blue(`index for ${dirName} updated`));
-                        }
-                    });
-            });
+            .on('add', ()=>createIndex(0))
+            .on('unlink', ()=>createIndex(1));
     });
     done();
 });

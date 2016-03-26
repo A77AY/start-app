@@ -8,7 +8,7 @@ function getStructure(node, root, nodeDir = '') {
                 newNode[key] = {
                     name: node[key],
                     dir: path.join(nodeDir, node[key]),
-                    path: path.join(root, node[key])
+                    path: path.join(root, nodeDir, node[key])
                 };
                 break;
             case 'object':
@@ -18,7 +18,7 @@ function getStructure(node, root, nodeDir = '') {
                     newNode[key] = {
                         name: node[key].dir,
                         dir: newNodeDir,
-                        path: path.join(root, node[key].dir),
+                        path: path.join(root, newNodeDir),
                         ...getStructure(childNode, root, newNodeDir)
                     }
                 }

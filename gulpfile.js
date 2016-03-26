@@ -4,7 +4,6 @@ import requireDir from 'require-dir'
 
 requireDir('./tasks');
 
-log(`Task info:
-Enviroment: ${colors.green(process.env.NODE_ENV)}`);
+log(colors.green(`Enviroment: ${process.env.NODE_ENV}`));
 
-task('default', series(parallel('server:clear', 'app:index'), parallel('server:watch', 'client:watch')));
+task('default', series(parallel('server:clear', 'app:index,routes'), parallel('server:watch', 'client:watch')));
