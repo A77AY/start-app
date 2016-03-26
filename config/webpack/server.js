@@ -1,8 +1,13 @@
 import webpack from 'webpack'
 import path from 'path'
-import nodeModules from '../utils/nodeModules'
+import fs from 'fs'
 import {server as serverBabelConfig} from '../babel'
 import config from '../app'
+
+const nodeModules = fs.readdirSync(path.join(config.root, 'node_modules'))
+    .filter(x => {
+        return ['.bin', '_', '.tmp'].indexOf(x) === -1;
+    });
 
 export default {
     debug: config.isDevelopment,
@@ -38,8 +43,9 @@ export default {
         loaders: [
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
-                loaders: ['monkey-hot?sourceType=module', 'babel?' + JSON.stringify(serverBabelConfig)]
+                loaders: ['monkey-hot?sourceType=module', 'babel?' + JSON.stringify(serverBabelConfig)],
+                //exclude: /node_modules/,
+                include: [config.structure.src.path, config.structure.config.path, path.join(config.root, 'node_modules/_')]
             }
         ]
     }

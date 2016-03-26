@@ -1,6 +1,10 @@
 import appConfig from './utils/appConfig'
 
 export default appConfig({
+    server: {
+        host: 'localhost',
+        port: 8080
+    },
     structure: {
         build: 'build',
         config: 'config',

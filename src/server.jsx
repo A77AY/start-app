@@ -1,4 +1,9 @@
-import express from 'express';
+import express from 'express'
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import {RouterContext, match} from 'react-router'
+import routes from '_/routes'
+import {Template} from '_/template'
 
 const app = express();
 

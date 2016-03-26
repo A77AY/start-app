@@ -8,7 +8,8 @@ var base = {
         'transform-es2015-sticky-regex',
         'transform-es2015-unicode-regex',
         'transform-es2015-function-name',
-        'transform-es2015-shorthand-properties'
+        'transform-es2015-shorthand-properties',
+        'transform-es2015-modules-commonjs'
     ]
 };
 
@@ -40,6 +41,6 @@ module.exports = {
     server: merge(app, {
     }),
     tasks: merge(base, {
-        plugins: ['transform-es2015-modules-commonjs']
+        plugins: []
     })
 };
