@@ -22,7 +22,7 @@ export default class App extends Component {
         return (
             <div>
                 <Helmet
-                    htmlAttributes={{lang: 'ru'}}
+                    htmlAttributes={{lang: 'ru-RU'}}
                     meta={[
                         {charset: 'utf-8'},
                         {name: 'description', content: 'Application'}

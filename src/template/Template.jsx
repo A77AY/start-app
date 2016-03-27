@@ -6,34 +6,27 @@ export default class Template extends Component {
         return {__html: this.props.markup};
     };
 
-    getHead = () => {
-        const head = this.props.head;
-        return {
-            __html: `
-            ${head.title}
-            ${head.meta}
-            ${head.link}
-            ${head.script}
-            ${head.base}`
-        };
-    };
-
     getFoot = () => {
         return {
-            __html: `
-                ${this.props.foot.join('')}
-                <script src="http://localhost:8888/client.js"></script>
-            `
+            __html: this.props.foot.join('')
         }
     };
 
     render() {
+        const head = this.props.head;
         return (
-            <html {...this.props.head.htmlAttributes.toComponent()}>
-            <head dangerouslySetInnerHTML={this.getHead()}/>
+            <html {...head.htmlAttributes.toComponent()}>
+            <head>
+                {head.title.toComponent()}
+                {head.meta.toComponent()}
+                {head.link.toComponent()}
+                {head.script.toComponent()}
+                {head.base.toComponent()}
+            </head>
             <body>
             <div id="app" dangerouslySetInnerHTML={this.getMarkup()}/>
             <div id="foot" dangerouslySetInnerHTML={this.getFoot()}/>
+            <script src="http://localhost:8888/client.js"></script>
             </body>
             </html>
         );
