@@ -1,7 +1,6 @@
 var merge = require('deepmerge');
 
 var base = {
-    presets: ['stage-0'],
     plugins: [
         'transform-es2015-destructuring',
         'transform-es2015-parameters',
@@ -9,7 +8,16 @@ var base = {
         'transform-es2015-unicode-regex',
         'transform-es2015-function-name',
         'transform-es2015-shorthand-properties',
-        'transform-es2015-modules-commonjs'
+        'transform-es2015-modules-commonjs',
+        'transform-do-expressions',
+        'transform-function-bind',
+        'transform-class-constructor-call',
+        'transform-class-properties',
+        'transform-export-extensions',
+        'syntax-trailing-function-commas',
+        'transform-object-rest-spread',
+        'transform-async-to-generator',
+        'transform-exponentiation-operator'
     ]
 };
 

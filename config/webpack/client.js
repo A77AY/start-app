@@ -1,11 +1,12 @@
 import webpack from 'webpack'
+import path from 'path'
 import {client as clientBabelConfig} from '../babel'
 import config from '../app'
 
-const serverUrl = 'http://localhost:8000';
+const serverUrl = 'http://localhost:8888';
 
 export default {
-    devtool: config.isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
+    devtool: config.isDevelopment ? '#cheap-module-eval-source-map' : '#source-map',
     debug: config.isDevelopment,
     entry: {
         client: [
@@ -28,8 +29,9 @@ export default {
         loaders: [
             {
                 test: /\.jsx?$/,
-                exclude: /node_modules/,
                 loaders: ['babel?' + JSON.stringify(clientBabelConfig)],
+                //exclude: /node_modules/,
+                include: [config.structure.src.path, config.structure.config.path, path.join(config.root, 'node_modules/_')]
             }
         ]
     },

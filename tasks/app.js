@@ -52,7 +52,7 @@ task('app:index,routes', (done) => {
                     props = '';
                     break;
                 default:
-                    props += '{' + key + '.path}';
+                    props += '{' + key + '.defaultProps.path}';
             }
             routes += `\n<${tagName}${props} component={${key}}${root[key].child ? `>${routesGenerator(root[key].child)}\n</${tagName}` : `/`}>`;
         }

@@ -11,7 +11,7 @@ const nodeModules = fs.readdirSync(path.join(config.root, 'node_modules'))
 
 export default {
     debug: config.isDevelopment,
-    devtool: config.isDevelopment ? 'cheap-module-eval-source-map' : 'source-map',
+    devtool: config.isDevelopment ? '#cheap-module-eval-source-map' : '#source-map',
     entry: {
         server: [
             'webpack/hot/signal.js',

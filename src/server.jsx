@@ -2,26 +2,33 @@ import express from 'express'
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import {RouterContext, match} from 'react-router'
+import Helmet from 'react-helmet'
 import routes from '_/routes'
 import {Template} from '_/template'
+import config from '../config/app'
 
 const app = express();
 
-app.use(express.static('public'));
+app.use(express.static(config.structure.public.dir));
 
-app.get('/', (req, res) => {
-    res.send(`
-    <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Hello World!</title>
-        </head>
-        <body>
-            <h1 id="header">Hello test!</h1>
-            <button id="button">Change color</button>
-            <script src="http://localhost:5001/client.js"></script>
-        </body>
-    </html>`);
+app.get('*', (req, res) => {
+    match({routes, location: req.url}, (error, redirectLocation, renderProps) => {
+        if (error) {
+            //res.status(500).send(error.message)
+            res.status(500).send('Internal server error')
+        } else if (redirectLocation) {
+            res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+        } else if (renderProps) {
+            const markup = ReactDOMServer.renderToString(<RouterContext {...renderProps}/>);
+            const template = ReactDOMServer.renderToStaticMarkup(<Template
+                head={Helmet.rewind()}
+                markup={markup}/>
+            );
+            res.status(200).send(template);
+        } else {
+            res.status(404).send('Not found')
+        }
+    })
 });
 
 app.listen(3000, () => {

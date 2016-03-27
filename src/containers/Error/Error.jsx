@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import Helmet from 'react-helmet'
 
-export default class Index extends Component {
+export default class Error extends Component {
 
     static defaultProps = {
-        path: '/'
+        path: '*'
     };
 
     state = {};
@@ -12,8 +12,6 @@ export default class Index extends Component {
     render() {
         return (
             <div>
-                <Helmet title="Index"/>
-                index page
             </div>
         );
     }
