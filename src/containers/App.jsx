@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Helmet from 'react-helmet'
 import {Header} from '_/components'
+import AsyncProps from 'async-props'
 
 export default class App extends Component {
 
@@ -8,9 +9,16 @@ export default class App extends Component {
         path: '/'
     };
 
+    static loadProps(params, cb) {
+        cb(null, {
+            tacos: [ 'Pollo', 'Carnitas' ]
+        })
+    }
+
     state = {};
 
     render() {
+        const tacos = this.props.tacos;
         return (
             <div>
                 <Helmet
@@ -23,6 +31,11 @@ export default class App extends Component {
                 />
                 <Header/>
                 {this.props.children}
+                <ul>
+                    {tacos.map((taco, i) => (
+                        <li key={i}>{taco}</li>
+                    ))}
+                </ul>
             </div>
         );
     }

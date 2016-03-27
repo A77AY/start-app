@@ -2,6 +2,7 @@ var merge = require('deepmerge');
 
 var base = {
     plugins: [
+        // ES2015
         'transform-es2015-destructuring',
         'transform-es2015-parameters',
         'transform-es2015-sticky-regex',
@@ -9,6 +10,7 @@ var base = {
         'transform-es2015-function-name',
         'transform-es2015-shorthand-properties',
         'transform-es2015-modules-commonjs',
+        // Stage-0
         'transform-do-expressions',
         'transform-function-bind',
         'transform-class-constructor-call',
@@ -17,7 +19,9 @@ var base = {
         'syntax-trailing-function-commas',
         'transform-object-rest-spread',
         'transform-async-to-generator',
-        'transform-exponentiation-operator'
+        'transform-exponentiation-operator',
+        // Legacy
+        'babel-plugin-transform-decorators-legacy'
     ]
 };
 

@@ -62,7 +62,7 @@ task('app:index,routes', (done) => {
     let currentCount = srcDirs.length;
     srcDirs.forEach((srcDir) => {
         const isCreateRoutes = srcDir === srcDirs[0];
-        const watchPaths = [path.join(srcDir.path, '**/*.*')];
+        const watchPaths = [path.join(srcDir.path, '**/*.@(js|jsx)')];
         let lastIndexContent = '';
         const createIndex = (type, cb = () => {}) => {
             const files = {};

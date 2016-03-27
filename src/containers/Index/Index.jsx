@@ -13,7 +13,7 @@ export default class Index extends Component {
         return (
             <div>
                 <Helmet title="Index"/>
-                index page
+                Index
             </div>
         );
     }

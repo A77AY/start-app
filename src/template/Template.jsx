@@ -18,13 +18,22 @@ export default class Template extends Component {
         };
     };
 
+    getFoot = () => {
+        return {
+            __html: `
+                ${this.props.foot.join('')}
+                <script src="http://localhost:8888/client.js"></script>
+            `
+        }
+    };
+
     render() {
         return (
             <html {...this.props.head.htmlAttributes.toComponent()}>
             <head dangerouslySetInnerHTML={this.getHead()}/>
             <body>
             <div id="app" dangerouslySetInnerHTML={this.getMarkup()}/>
-            <script src={'http://localhost:8888/client.js'}></script>
+            <div id="foot" dangerouslySetInnerHTML={this.getFoot()}/>
             </body>
             </html>
         );
