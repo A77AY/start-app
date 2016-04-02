@@ -39,14 +39,12 @@ task('app:index,routes', (done) => {
         let routes = '';
         let tagName = '';
         let props = '';
+        let lastRoute = '';
         for (const key in root) {
             if (!root[key].path) continue;
             tagName = 'Route';
             props = ' path=';
             switch (key) {
-                case 'App':
-                    props += '"/"';
-                    break;
                 case config.structure.src.containers.index.name:
                     tagName = 'IndexRoute';
                     props = '';
@@ -54,9 +52,14 @@ task('app:index,routes', (done) => {
                 default:
                     props += '{' + key + '.defaultProps.path}';
             }
-            routes += `\n<${tagName}${props} component={${key}}${root[key].child ? `>${routesGenerator(root[key].child)}\n</${tagName}` : `/`}>`;
+            const route = `\n<${tagName}${props} component={${key}}${root[key].child ? `>${routesGenerator(root[key].child)}\n</${tagName}` : `/`}>`;
+            if(key === 'Error') {
+                lastRoute = route;
+                continue;
+            }
+            routes += route;
         }
-        return routes;
+        return routes + lastRoute;
     };
     //gulp.series('app:clear')();
     let currentCount = srcDirs.length;

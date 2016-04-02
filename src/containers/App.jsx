@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Helmet from 'react-helmet'
-import {Header} from '_/components'
-import AsyncProps from 'async-props'
+import styles from './App.css'
+import {Content, Header, Footer} from '_/components'
 
 export default class App extends Component {
 
@@ -9,33 +9,28 @@ export default class App extends Component {
         path: '/'
     };
 
-    static loadProps(params, cb) {
-        cb(null, {
-            tacos: [ 'Pollo', 'Carnitas' ]
-        })
-    }
-
     state = {};
 
     render() {
-        const tacos = this.props.tacos;
         return (
             <div>
                 <Helmet
                     htmlAttributes={{lang: 'ru-RU'}}
                     meta={[
                         {charset: 'utf-8'},
-                        {name: 'description', content: 'Application'}
+                        {name: 'description', content: 'Application'},
+                        {name: 'viewport', content: 'width=device-width, initial-scale=1'}
                     ]}
                     title='Application'
+                    link={[
+                        {href: 'public/fonts/roboto/roboto.css', rel: 'stylesheet', type: 'text/css'}
+                    ]}
                 />
-                <Header/>
-                {this.props.children}
-                <ul>
-                    {tacos.map((taco, i) => (
-                        <li key={i}>{taco}</li>
-                    ))}
-                </ul>
+                <Header />
+                <Content>
+                    {this.props.children}
+                </Content>
+                <Footer />
             </div>
         );
     }

@@ -28,16 +28,20 @@ export default {
         __filename: true
     },
     externals: [
-        function (context, request, cb) {
+        (context, request, cb) => {
             if (nodeModules.indexOf(request.split('/')[0]) >= 0 && request != 'webpack/hot/signal.js') return cb(null, "commonjs " + request);
             cb();
         }
     ],
     recordsPath: path.join(config.structure.build.path, '_records'),
     plugins: [
-        new webpack.IgnorePlugin(/\.(css|less)$/),
+        //new webpack.IgnorePlugin(/\.(css|less)$/),
         new webpack.BannerPlugin('require("source-map-support").install();', {raw: true, entryOnly: false}),
-        new webpack.HotModuleReplacementPlugin({quiet: true})
+        new webpack.HotModuleReplacementPlugin({quiet: true}),
+        new webpack.DefinePlugin({
+            IS_SERVER: true,
+            IS_CLIENT: false
+        })
     ],
     module: {
         loaders: [
@@ -46,6 +50,13 @@ export default {
                 loaders: ['monkey-hot?sourceType=module', 'babel?' + JSON.stringify(serverBabelConfig)],
                 //exclude: /node_modules/,
                 include: [config.structure.src.path, config.structure.config.path, path.join(config.root, 'node_modules/_')]
+            },
+            {
+                test: /\.css$/,
+                loaders: [
+                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
+                ],
+                exclude: /node_modules/
             }
         ]
     }

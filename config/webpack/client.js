@@ -23,7 +23,20 @@ export default {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoErrorsPlugin(),
+        new webpack.DefinePlugin({
+            IS_SERVER: false,
+            IS_CLIENT: true
+        }),
+        new webpack.NormalModuleReplacementPlugin(
+            /.*\.server\..*/g,
+            (res) => {
+                const file = path.parse(res.resource);
+                const name = file.name.split('.');
+                name[name.length - 1] = 'client';
+                res.resource = path.join(file.dir, name.join('.') + file.ext);
+            }
+        )
     ],
     module: {
         loaders: [
@@ -32,6 +45,14 @@ export default {
                 loaders: ['babel?' + JSON.stringify(clientBabelConfig)],
                 //exclude: /node_modules/,
                 include: [config.structure.src.path, config.structure.config.path, path.join(config.root, 'node_modules/_')]
+            },
+            {
+                test: /\.css$/,
+                loaders: [
+                    'style?sourceMap',
+                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]'
+                ],
+                exclude: /node_modules/
             }
         ]
     },

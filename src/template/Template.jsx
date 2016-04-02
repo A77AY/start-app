@@ -26,7 +26,7 @@ export default class Template extends Component {
             <body>
             <div id="app" dangerouslySetInnerHTML={this.getMarkup()}/>
             <div id="foot" dangerouslySetInnerHTML={this.getFoot()}/>
-            <script src="http://localhost:8888/client.js"></script>
+            <script src="http://localhost:8888/client.js"/>
             </body>
             </html>
         );

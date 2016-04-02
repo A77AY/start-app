@@ -12,7 +12,7 @@ export default class Error extends Component {
     render() {
         return (
             <div>
-                Error
+                <h1>Page not found</h1>
             </div>
         );
     }

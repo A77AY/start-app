@@ -15,6 +15,7 @@ export default appConfig({
             server: 'server.jsx',
             client: 'client.jsx',
             components: 'components',
+            utils: 'utils',
             containers: {
                 dir: 'containers',
                 index: 'Index'

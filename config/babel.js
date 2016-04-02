@@ -21,7 +21,9 @@ var base = {
         'transform-async-to-generator',
         'transform-exponentiation-operator',
         // Legacy
-        'babel-plugin-transform-decorators-legacy'
+        'transform-decorators-legacy',
+        // Clear
+        'conditional-compile'
     ]
 };
 

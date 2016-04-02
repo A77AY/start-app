@@ -7,16 +7,11 @@ export default class About extends Component {
         path: 'about'
     };
 
-    state = {
-        title: "About"
-    };
-
     render() {
         return (
             <div>
-                <Helmet title={this.state.title}/>
-                About
-                <br/><button onClick={()=>{this.setState({title: 'Test'})}}>rename</button>
+                <Helmet title="About"/>
+                <h1>About</h1>
             </div>
         );
     }
